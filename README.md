@@ -41,7 +41,7 @@ User Question
 Rule-Based Router (Intent Detection)
       ↓
  ┌──────────────────────────────┐
- │ Structured Query (Cypher)   │
+ │ Structured Query (Cypher)    │
  │ OR                           │
  │ Hybrid Retrieval             │
  │   → Vector Search            │
