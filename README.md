@@ -1,26 +1,20 @@
-**Hybrid GraphRAG System using Neo4j + Vector Search**
+---
 
-> End-to-end Graph Retrieval-Augmented Generation (GraphRAG) pipeline combining Neo4j graph traversal with vector similarity search for hybrid semantic plus structured query answering.
+# 🧠 Hybrid GraphRAG System using Neo4j + Vector Search
+
+> End-to-end Graph Retrieval-Augmented Generation (GraphRAG) pipeline combining Neo4j graph traversal with vector similarity search for hybrid semantic + structured query answering.
 
 ---
-**Overview**
 
-Retail businesses generate structured (transactions, customers, products) and unstructured data (reviews, support tickets). 
+## 🚀 Overview
 
-Traditional SQL systems struggle to:
-- Connect entity relationships
-- Perform contextual filtering
-- Understand customer sentiment
-- Combine analytics with semantic retrieval
+This project implements a **Hybrid GraphRAG architecture** that integrates:
 
-
-This project builds a GraphRAG system that integrates:
-
-1. Structured graph data (Neo4j AuraDB)
-2. Vector similarity search (Sentence Transformers)
-3. Graph traversal (Cypher)
-4. Hybrid semantic + symbolic filtering
-5. Retail analytics queries
+* 📊 Structured graph data (Neo4j AuraDB)
+* 🔎 Vector similarity search (Sentence Transformers)
+* 🔗 Graph traversal (Cypher)
+* 🧠 Hybrid semantic + symbolic filtering
+* 📈 Retail analytics queries
 
 The system models retail customer data and enables advanced queries such as:
 
@@ -30,18 +24,21 @@ The system models retail customer data and enables advanced queries such as:
 * High-rated reviews
 * Semantic queries like:
 
+```text
 "Show durable furniture reviews from California"
+```
 
 ---
 
-**Architecture**
+## 🏗 Architecture
 
+```
 User Question
       ↓
 Rule-Based Router (Intent Detection)
       ↓
  ┌──────────────────────────────┐
- │ Structured Query (Cypher)    │
+ │ Structured Query (Cypher)   │
  │ OR                           │
  │ Hybrid Retrieval             │
  │   → Vector Search            │
@@ -52,18 +49,11 @@ Rule-Based Router (Intent Detection)
 Neo4j AuraDB
       ↓
 Ranked Results
+```
 
 ---
 
-**Project Structure**
-
-
-Hybrid_GraphRAG/
-│
-├── graphrag_project.ipynb # Main implementation notebook
-└── README.md # Project documentation
-
-**Dataset**
+## 📂 Dataset
 
 Retail Customer & Transaction Dataset (Kaggle)
 
@@ -80,25 +70,9 @@ Loaded:
 
 ---
 
-**Exploratory Data Analysis (EDA)**
+## 🗄 Graph Schema
 
-Performed initial EDA using Pandas:
-
-customers['age'].hist()
-reviews['rating'].value_counts()
-
-Insights:
-
-Age distribution shows diverse customer base
-
-Ratings distribution indicates majority 4–5 star reviews
-
-Helped validate dataset quality before graph modeling
-
----
-**Graph Schema**
-
-Nodes
+### Nodes
 
 * `Customer`
 * `Transaction`
@@ -108,7 +82,7 @@ Nodes
 * `SupportTicket`
 * `Interaction`
 
-**Relationships**
+### Relationships
 
 * `(Customer)-[:PURCHASED]->(Transaction)`
 * `(Transaction)-[:CONTAINS]->(Product)`
@@ -117,7 +91,7 @@ Nodes
 
 ---
 
-**Vector Search Layer**
+## 🧠 Vector Search Layer
 
 * Model: `all-MiniLM-L6-v2`
 * Embedding size: 384 dimensions
@@ -126,6 +100,7 @@ Nodes
 
 Example hybrid query:
 
+```cypher
 CALL db.index.vector.queryNodes(
     'review_embedding_index',
     10,
@@ -146,22 +121,25 @@ RETURN review.review_title,
        score
 ORDER BY score DESC
 LIMIT 5
+```
 
-**Key Features**
+---
 
-1. Structured Graph Analytics
+## 🔥 Key Features
+
+### ✅ Structured Graph Analytics
 
 * Top spending customers
 * Most purchased products
 * Customer segmentation by state
 * Average ratings per product
 
-2. Semantic Retrieval
+### ✅ Semantic Retrieval
 
 * Vector similarity over review text
 * Ranked by cosine similarity
 
-3. Hybrid GraphRAG
+### ✅ Hybrid GraphRAG
 
 * Embedding search + Graph traversal
 * State-based filtering
@@ -171,13 +149,15 @@ LIMIT 5
 
 ---
 
-**Major Engineering Challenges & Solutions**
+## 🛠 Major Engineering Challenges & Solutions
 
-1. Issue: Aggregation Returning `NaN`
+### 🚨 Issue: Aggregation Returning `NaN`
 
 Problem:
 
+```cypher
 SUM(t.price * t.quantity) → NaN
+```
 
 Root Cause:
 
@@ -187,9 +167,11 @@ Root Cause:
 
 Solution:
 
+```cypher
 MATCH (t:Transaction)
 WHERE t.price <> t.price
 SET t.price = NULL
+```
 
 Cleaned:
 
@@ -201,7 +183,7 @@ Accurate aggregation restored.
 
 ---
 
-2.  Issue: Duplicate Review Results
+### 🚨 Issue: Duplicate Review Results
 
 Cause:
 Multiple matching traversal paths.
@@ -211,36 +193,45 @@ Used `DISTINCT` in Cypher queries.
 
 ---
 
-3.  Issue: Category Not Enforced in Hybrid Query
+### 🚨 Issue: Category Not Enforced in Hybrid Query
 
 Solution:
 Added entity detection:
 
+```python
 categories = ["furniture", "electronics", ...]
+```
 
 And enforced:
 
+```cypher
 AND ($category IS NULL OR p.product_category = $category)
+```
 
 ---
 
-**Example Outputs**
+## 📊 Example Outputs
 
-1. Top Spending Customers
+### Top Spending Customers
 
+```json
 [
   {"customer": "Tracey Patterson", "total_spent": 145080.34},
   {"customer": "Margaret Liu", "total_spent": 116546.58}
 ]
+```
 
 ---
 
-2. Hybrid Query Example
+### Hybrid Query Example
 
+```python
 ask_graph("Show durable furniture reviews from California")
+```
 
 Output:
 
+```json
 [
   {
     "review": "Perfect Fit for Our Living Room!",
@@ -250,10 +241,11 @@ Output:
     "rating": 5
   }
 ]
+```
 
 ---
 
-**Project Impact**
+## 📈 Project Impact
 
 * Modeled 30K+ relationships in Neo4j
 * Implemented 384-dimension vector index
@@ -263,7 +255,7 @@ Output:
 
 ---
 
-**Tech Stack**
+## 🛠 Tech Stack
 
 * Python
 * Neo4j AuraDB (v5)
@@ -274,7 +266,7 @@ Output:
 
 ---
 
-**Future Improvements**
+## 🧩 Future Improvements
 
 * Replace rule-based router with LLM-based NL → Cypher
 * Add conversational memory
@@ -284,7 +276,7 @@ Output:
 
 ---
 
-**What This Project Demonstrates**
+## 🏆 What This Project Demonstrates
 
 * Graph data modeling
 * Cypher query optimization
@@ -292,4 +284,12 @@ Output:
 * Hybrid semantic + symbolic retrieval
 * Data cleaning & debugging (NaN handling)
 * Production-style GraphRAG architecture
+
+---
+
+## 📌 Author
+
+Built as an advanced GraphRAG engineering project exploring hybrid retrieval systems using Neo4j and vector embeddings.
+
+---
 
