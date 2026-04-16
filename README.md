@@ -1,5 +1,3 @@
----
-
 # 🧠 Hybrid GraphRAG System using Neo4j + Vector Search
 
 > End-to-end Graph Retrieval-Augmented Generation (GraphRAG) pipeline combining Neo4j graph traversal with vector similarity search for hybrid semantic + structured query answering.
