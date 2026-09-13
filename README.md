@@ -28,6 +28,41 @@ The system models retail customer data and enables advanced queries such as:
 
 ---
 
+## ⚙️ Setup
+
+### 1. Create your own Neo4j AuraDB instance
+
+Sign up for a free instance at [Neo4j Aura](https://neo4j.com/cloud/aura/), then note its connection URI, username, and password from the console.
+
+### 2. (Optional) Create a DeepSeek account
+
+An earlier cell in the notebook experiments with routing questions through DeepSeek's API. It isn't required to run the project (see the note under Architecture below), but if you want to try it, get an API key from [DeepSeek](https://platform.deepseek.com/).
+
+### 3. Set your credentials as environment variables
+
+Never hardcode credentials in the notebook. Set them as environment variables instead — for example, in a `.env` file (loaded with `python-dotenv`) or directly in your shell/Colab secrets:
+
+```bash
+export NEO4J_URI="neo4j+s://your-instance-id.databases.neo4j.io"
+export NEO4J_USERNAME="your-username"
+export NEO4J_PASSWORD="your-password"
+export DEEPSEEK_API_KEY="your-deepseek-key"   # optional
+```
+
+In Google Colab, use the "Secrets" panel (key icon in the left sidebar) instead of typing keys into cells.
+
+### 4. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Run the notebook
+
+Open `graphrag_project.ipynb` and run the cells top to bottom. The Neo4j connection cells will read your credentials from the environment variables above.
+
+---
+
 ## 🏗 Architecture
 
 ```
@@ -48,6 +83,8 @@ Neo4j AuraDB
       ↓
 Ranked Results
 ```
+
+> **Note:** an earlier version of this project tried routing questions through DeepSeek's LLM API instead of writing the rules by hand. That approach didn't work out reliably, so it was replaced with the plain rule-based router above — the DeepSeek connection cells are still in the notebook for the record, but `ask_graph()` doesn't call the LLM.
 
 ---
 
@@ -290,4 +327,3 @@ Output:
 Built as an advanced GraphRAG engineering project exploring hybrid retrieval systems using Neo4j and vector embeddings.
 
 ---
-
